@@ -70,7 +70,7 @@ jobs:
           path-to-deploy: docs
 
       - if: github.actor != 'dependabot[bot]' && github.ref_name == 'main' && steps.deploy.outputs.cid
-        run: ipfs --api "$KUBO_API_URL" --api-auth "$KUBO_API_AUTH" name publish --key=@natoboram/gigachad.ts "/ipfs/$CID"
+        run: ipfs --api "$KUBO_API_URL" --api-auth "$KUBO_API_AUTH" name publish --key=@natoboram/ai-slop "/ipfs/$CID"
         env:
           CID: ${{ steps.deploy.outputs.cid }}
           KUBO_API_AUTH: ${{ secrets.KUBO_API_AUTH }}
