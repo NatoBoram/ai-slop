@@ -1,0 +1,159 @@
+name: Node.js Publish
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  build:
+    permissions:
+      contents: read
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v5
+        with:
+          version: latest
+      - uses: actions/setup-node@v6
+        with:
+          cache: pnpm
+          node-version: latest
+      - run: pnpm install
+      - run: pnpm build
+      - run: pnpm pack --pack-gzip-level 9
+
+      - if: github.actor != 'nektos/act'
+        uses: actions/upload-artifact@v7
+        with:
+          name: natoboram-gigachad.ts-${{ github.ref_name }}.tgz
+          path: natoboram-gigachad.ts-*.tgz
+          compression-level: 9
+          if-no-files-found: error
+
+  publish-npm:
+    permissions:
+      id-token: write # Add `--provenance`
+
+    needs: build
+    if: github.actor != 'nektos/act'
+    runs-on: ubuntu-latest
+
+    environment:
+      name: npm-public-registry
+      url: ${{ steps.url.outputs.url }}
+
+    steps:
+      - uses: pnpm/action-setup@v5
+        with:
+          version: latest
+      - uses: actions/setup-node@v6
+        with:
+          registry-url: https://registry.npmjs.org
+          scope: "@natoboram"
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: natoboram-gigachad.ts-${{ github.ref_name }}.tgz
+
+      - run: pnpm publish natoboram-gigachad.ts-*.tgz --access public --no-git-checks --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+
+      - id: url
+        run: echo "url=https://www.npmjs.com/package/@natoboram/gigachad.ts/v/${VERSION#v}" >> "$GITHUB_OUTPUT"
+        env:
+          VERSION: ${{ github.ref_name }}
+
+  publish-github:
+    permissions:
+      id-token: write # Add `--provenance`
+      packages: write # Publish the package
+
+    needs: build
+    if: github.actor != 'nektos/act'
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-packages-registry
+      url: ${{ steps.url.outputs.url }}
+
+    steps:
+      - uses: pnpm/action-setup@v5
+        with:
+          version: latest
+      - uses: actions/setup-node@v6
+        with:
+          registry-url: https://npm.pkg.github.com
+          scope: "@natoboram"
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: natoboram-gigachad.ts-${{ github.ref_name }}.tgz
+
+      - run: pnpm publish natoboram-gigachad.ts-*.tgz --access public --no-git-checks --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - id: url
+        run: |
+          url=$(gh api '/users/NatoBoram/packages/npm/gigachad.ts/versions' | jq -r --arg NAME "${VERSION#v}" '.[] | select(.name == $NAME) | .html_url')
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ github.ref_name }}
+
+  publish-jsr:
+    permissions:
+      contents: read
+      id-token: write # Add `--provenance`
+
+    needs: build
+    if: github.actor != 'nektos/act'
+    runs-on: ubuntu-latest
+
+    environment:
+      name: javascript-registry
+      url: ${{ steps.url.outputs.url }}
+
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v5
+        with:
+          version: latest
+      - uses: actions/setup-node@v6
+        with:
+          registry-url: https://npm.jsr.io
+          scope: "@natoboram"
+
+      - run: pnpm dlx jsr publish
+
+      - id: url
+        run: echo "url=https://jsr.io/@natoboram/gigachad-ts@${VERSION#v}" >> "$GITHUB_OUTPUT"
+        env:
+          VERSION: ${{ github.ref_name }}
+
+  release:
+    permissions:
+      contents: write # Upload the release files
+
+    needs: build
+    if: github.actor != 'nektos/act'
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-releases
+      url: ${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ github.ref_name }}
+
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: natoboram-gigachad.ts-${{ github.ref_name }}.tgz
+
+      - run: gh release create "$VERSION" --generate-notes --repo "$REPO" --title "$VERSION" --verify-tag natoboram-gigachad.ts-*.tgz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          VERSION: ${{ github.ref_name }}

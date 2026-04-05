@@ -1,0 +1,31 @@
+# Folders
+.gemini
+.git
+.github
+.vscode
+coverage
+dist
+docs
+node_modules
+
+# Files
+.dockerignore
+.editorconfig
+.gitignore
+.markdownlint-cli2.yaml
+.markdownlint.yaml
+.prettierignore
+.prettierrc.yaml
+*.md
+*.test.ts
+*.tsbuildinfo
+*.txt
+bun.lockb
+Dockerfile
+eslint.config.ts
+jsr.json
+package-lock.json
+tsconfig.eslint.json
+typedoc.json
+vitest.config.ts
+yarn.lock
