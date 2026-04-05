@@ -26,6 +26,14 @@
 		"dist",
 		"!dist/**/*.test.*"
 	],
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		}
+	},
+	"main": "dist/index.js",
+	"type": "module",
 	"repository": "github:NatoBoram/ai-slop",
 	"scripts": {
 		"build": "tsgo",
@@ -36,14 +44,12 @@
 		"lint": "eslint . && markdownlint-cli2 \"**/*.md\" && prettier --check .",
 		"lint:fix": "eslint --fix --quiet .; markdownlint-cli2 \"**/*.md\" --fix; prettier --list-different --write .",
 		"test": "vitest run",
-		"test:coverage": "vitest run --coverage",
 		"test:watch": "vitest"
 	},
 	"devDependencies": {
 		"@eslint/js": "^10.0.1",
 		"@types/node": "^25.5.2",
 		"@typescript/native-preview": "7.0.0-dev.20260404.1",
-		"@vitest/coverage-v8": "4.1.2",
 		"eslint": "^10.2.0",
 		"eslint-config-prettier": "^10.1.8",
 		"globals": "^17.4.0",
@@ -55,6 +61,7 @@
 		"typescript-eslint": "^8.58.0",
 		"vitest": "^4.1.2"
 	},
-	"type": "module",
-	"private": true
+	"private": true,
+	"types": "dist/index.d.ts",
+	"module": "dist/index.js"
 }

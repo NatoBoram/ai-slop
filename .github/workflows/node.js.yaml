@@ -32,15 +32,7 @@ jobs:
       - run: pnpm install --frozen-lockfile --strict-peer-dependencies
       - run: pnpm run build --noEmit
       - run: pnpm run lint
-      - run: pnpm run test:coverage
-
-      - if: github.actor != 'nektos/act'
-        uses: actions/upload-artifact@v7
-        with:
-          name: coverage
-          path: coverage
-          compression-level: 9
-          if-no-files-found: error
+      - run: pnpm run test
 
   fix:
     permissions:
