@@ -46,9 +46,9 @@
 		"eslint-config-prettier": "^10.1.8",
 		"globals": "^17.4.0",
 		"jiti": "^2.6.1",
-		"markdownlint-cli2": "^0.22.0",
-		"prettier": "^3.8.1",
-		"typescript": "6.0.2",
+		"markdownlint-cli2": "^0.22.1",
+		"prettier": "^3.8.3",
+		"typescript": "6.0.3",
 		"typescript-eslint": "^8.58.0"
 	},
 	"engines": {
