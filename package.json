@@ -42,14 +42,14 @@
 		"@eslint/js": "^10.0.1",
 		"@types/node": "^25.6.0",
 		"@typescript/native-preview": "7.0.0-dev.20260603.1",
-		"eslint": "^10.3.0",
+		"eslint": "^10.6.0",
 		"eslint-config-prettier": "^10.1.8",
-		"globals": "^17.6.0",
-		"jiti": "^2.6.1",
-		"markdownlint-cli2": "^0.22.1",
-		"prettier": "^3.8.3",
+		"globals": "^17.7.0",
+		"jiti": "^2.7.0",
+		"markdownlint-cli2": "^0.23.0",
+		"prettier": "^3.9.4",
 		"typescript": "6.0.3",
-		"typescript-eslint": "^8.59.1"
+		"typescript-eslint": "^8.62.1"
 	},
 	"engines": {
 		"node": ">=24"
